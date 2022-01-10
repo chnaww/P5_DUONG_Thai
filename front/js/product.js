@@ -82,3 +82,13 @@ fetch('http://localhost:3000/api/products/' + idProduct)
     .catch(function(err) {
         console.log("erreur de récupération API");
     });
+
+
+    //function addProduct(){
+    //let products = [];
+   // if(localStorage.getItem('products')){
+   //     products = JSON.parse(localStorage.getItem('products'));
+   // }
+  //  products.push({'productId' : productId + 1, image : '<imageLink>'});
+   // localStorage.setItem('products', JSON.stringify(products));
+//}
