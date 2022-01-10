@@ -2,6 +2,10 @@
 let idURL = new URL(document.location).searchParams;
 let idProduct = idURL.get("id");
 
+//définition variables client
+let productColorPick = document.getElementById('colors');
+let productQtyPick = document.getElementById('quantity');
+
 //requet GET avec l'ID du canapé
 fetch('http://localhost:3000/api/products/' + idProduct)
     .then(function(result) {
@@ -42,16 +46,38 @@ fetch('http://localhost:3000/api/products/' + idProduct)
             newOption.innerHTML = color;
         }
 
-        //récupération des données pour le localcache
-        let optionProducts = {
-            productID : value._id,
-            productName : value.name,
-            productPrice : value.price,
-            productColor : colorPicked.value,
-            productQty : qtyPicked.value
-        }
+        //ajout au panier
+        let addToCart = document.getElementById('addToCart')
+        addToCart.addEventListener('click', function(event) {
 
-        console.log(optionProducts);
+            if (productQtyPick.value > 0 && productQtyPick.value <= 100 && productColorPick.value != '') {  
+
+                console.log(productColorPick.value);
+                console.log(productQtyPick.value);
+
+                let produitChoisi = {
+                    idProduit : idProduct,
+                    nomProduit : value.name,
+                    prixProduit : value.price
+                }
+
+                
+                //recup json, si vide cree tableau, sinon ajouter element
+                //boucle verifier si produit deja existant, si couleur existant, si non ajout au tableau
+                //si non incrémentation qty
+                let objJson = JSON.stringify(produitChoisi);
+                localStorage.setItem("details", objJson);
+
+                let getObj = localStorage.getItem("details");
+                let objParseJson = JSON.parse(getObj);
+                alert(objParseJson.prixProduit)
+
+            }else {
+
+            alert ('error');
+
+            }
+        })
     })
     .catch(function(err) {
         console.log("erreur de récupération API");
