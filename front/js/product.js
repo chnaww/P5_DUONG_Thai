@@ -14,6 +14,7 @@ fetch('http://localhost:3000/api/products/' + idProduct)
         }
     })
     .then (function(value) {
+        console.table(value);
         //récupération du nom du canapé
         let productTitle = document.getElementById('title');
         productTitle.innerHTML = value.name;
@@ -45,37 +46,60 @@ fetch('http://localhost:3000/api/products/' + idProduct)
             newOption.value = color;
             newOption.innerHTML = color;
         }
-
         //ajout au panier
+        //ajout d'un event au click sur le bouton ajout panier
         let addToCart = document.getElementById('addToCart')
         addToCart.addEventListener('click', function(event) {
 
+            //verifier que les champs couleur et quantité soient bien renseignés
             if (productQtyPick.value > 0 && productQtyPick.value <= 100 && productColorPick.value != '') {  
 
-                console.log(productColorPick.value);
-                console.log(productQtyPick.value);
+                choixCouleur = productColorPick.value;
+                choixQty = productQtyPick.value;
 
+                //récupérer les données du produit choisi par le client
                 let produitChoisi = {
                     idProduit : idProduct,
                     nomProduit : value.name,
-                    prixProduit : value.price
+                    prixProduit : value.price,
+                    couleurProduit : choixCouleur,
+                    qtyProduit : choixQty
                 }
 
+                //création du array panier
+                let cart = [];
+
+                //vérifier si le panier existe déjà dans le localstorage
+                if(localStorage.getItem('localCart')){
+
+                    // récupération du fichier Json panier local
+                    cart = JSON.parse(localStorage.getItem('localCart'));
+
+                    //vérifier si le produit(nom et couleur) existe dans le panier
+                    let sameProduct = cart.find(el => el.idProduit === idProduct && el.couleurProduit === choixCouleur);
+                    
+                    // mise à jour de la quantité du produit
+                    if (sameProduct) {
+                        let newQty = parseInt(sameProduct.qtyProduit) + parseInt(choixQty);
+                        sameProduct.qtyProduit = newQty;
+                        localStorage.setItem('localCart', JSON.stringify(cart));
+                        console.table(cart);
+
+                    // sinon ajouter le nouveau produit dans le panier
+                    } else {
+                        cart.push(produitChoisi);
+                        localStorage.setItem('localCart', JSON.stringify(cart));
+                        console.table(cart);
+                    }
                 
-                //recup json, si vide cree tableau, sinon ajouter element
-                //boucle verifier si produit deja existant, si couleur existant, si non ajout au tableau
-                //si non incrémentation qty
-                let objJson = JSON.stringify(produitChoisi);
-                localStorage.setItem("details", objJson);
-
-                let getObj = localStorage.getItem("details");
-                let objParseJson = JSON.parse(getObj);
-                alert(objParseJson.prixProduit)
-
-            }else {
-
-            alert ('error');
-
+                // si il n'y a rien dans le localstorage, créer le panier
+                } else {
+                    cart.push(produitChoisi);
+                    localStorage.setItem('localCart', JSON.stringify(cart));
+                    console.table(cart);
+                }
+            } else {
+                alert ("error");
             }
         })
     })

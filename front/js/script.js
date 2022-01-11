@@ -5,6 +5,7 @@ fetch("http://localhost:3000/api/products")
         }
     })
     .then(function(value) {  
+        console.table(value);
         for (let item of value) {
             //création du lien pour chaque canapé
             let newA = newElement('a');
