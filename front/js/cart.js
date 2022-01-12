@@ -92,8 +92,15 @@ if (localStorage.getItem('localCart')) {
         let btnOrder = getElement('order');
         btnOrder.addEventListener('click', function() {
             let checkFormEmpty = document.querySelectorAll('.cart__order input');
-            let dataTest = checkFormEmpty.length;
-            console.log(checkFormEmpty[2].value);
+            checkFormEmpty.forEach(function(item) {
+                if (item.value == '') {
+                    let inputId = item.id + "ErrorMsg";
+                    getElement(inputId).innerText = ("Veuillez remplir ce champ. Merci !");
+                } else {
+                    let inputId = item.id + "ErrorMsg";
+                    getElement(inputId).innerText = ("");
+                }
+            })
         })
     }
 } else {
