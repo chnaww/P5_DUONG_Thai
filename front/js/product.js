@@ -6,6 +6,8 @@ let idProduct = idURL.get("id");
 let productColorPick = document.getElementById('colors');
 let productQtyPick = document.getElementById('quantity');
 
+//localStorage.clear();
+
 //requet GET avec l'ID du canapé
 fetch('http://localhost:3000/api/products/' + idProduct)
     .then(function(result) {
@@ -61,6 +63,8 @@ fetch('http://localhost:3000/api/products/' + idProduct)
                 let produitChoisi = {
                     idProduit : idProduct,
                     nomProduit : value.name,
+                    imgProduit : value.imageUrl,
+                    imgAltProduit : value.altTxt,
                     prixProduit : value.price,
                     couleurProduit : choixCouleur,
                     qtyProduit : choixQty
@@ -106,13 +110,3 @@ fetch('http://localhost:3000/api/products/' + idProduct)
     .catch(function(err) {
         console.log("erreur de récupération API");
     });
-
-
-    //function addProduct(){
-    //let products = [];
-   // if(localStorage.getItem('products')){
-   //     products = JSON.parse(localStorage.getItem('products'));
-   // }
-  //  products.push({'productId' : productId + 1, image : '<imageLink>'});
-   // localStorage.setItem('products', JSON.stringify(products));
-//}
