@@ -76,12 +76,25 @@ if (localStorage.getItem('localCart')) {
         })
 
         totalQty = parseInt(produit.qtyProduit) + parseInt(totalQty);
-        let displaytotalQty = getElement('totalQuantity');
-        displaytotalQty.innerText = totalQty;
+        let displayTotalQty = getElement('totalQuantity');
+        if (totalQty > 1) {
+            let articlePluriel = getElement('articles');
+            articlePluriel.innerHTML = ("articles");
+        }
+        displayTotalQty.innerText = totalQty;
 
         totalPrice = parseInt(produit.qtyProduit)*parseInt(produit.prixProduit) + parseInt(totalPrice);
         let displaytotalPrice = getElement('totalPrice');
         displaytotalPrice.innerText = totalPrice;
+
+
+
+        let btnOrder = getElement('order');
+        btnOrder.addEventListener('click', function() {
+            let checkFormEmpty = document.querySelectorAll('.cart__order input');
+            let dataTest = checkFormEmpty.length;
+            console.log(checkFormEmpty[2].value);
+        })
     }
 } else {
     let messagePanier = document.querySelector("#cartAndFormContainer h1");
@@ -90,6 +103,7 @@ if (localStorage.getItem('localCart')) {
 
 console.log(showCart.length);
 console.table(showCart);
+
 
 function newElement(element) {
     return document.createElement(element);
