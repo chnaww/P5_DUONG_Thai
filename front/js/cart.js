@@ -2,6 +2,8 @@ let showCart = [];
 let totalQty = 0;
 let totalPrice = 0;
 
+let infosClient = {firstName,lastName,address,city,email}
+
 if (localStorage.getItem('localCart')) {
     showCart = JSON.parse(localStorage.getItem('localCart'));
     for (let produit of showCart) {
@@ -86,31 +88,50 @@ if (localStorage.getItem('localCart')) {
         totalPrice = parseInt(produit.qtyProduit)*parseInt(produit.prixProduit) + parseInt(totalPrice);
         let displaytotalPrice = getElement('totalPrice');
         displaytotalPrice.innerText = totalPrice;
-
-
-
-        let btnOrder = getElement('order');
-        btnOrder.addEventListener('click', function() {
-            let checkFormEmpty = document.querySelectorAll('.cart__order input');
-            checkFormEmpty.forEach(function(item) {
-                if (item.value == '') {
-                    let inputId = item.id + "ErrorMsg";
-                    getElement(inputId).innerText = ("Veuillez remplir ce champ. Merci !");
-                } else {
-                    let inputId = item.id + "ErrorMsg";
-                    getElement(inputId).innerText = ("");
-                }
-            })
-        })
     }
 } else {
     let messagePanier = document.querySelector("#cartAndFormContainer h1");
     messagePanier.innerText =("VOTRE PANIER EST VIDE");
 }
 
-console.log(showCart.length);
-console.table(showCart);
 
+let btnOrder = getElement('order');
+btnOrder.addEventListener('click', function() {
+let checkFormEmpty = document.querySelectorAll('.cart__order input');            
+checkFormEmpty.forEach(function(item) {
+    if (item.value == '' && item.id != "order" && item.id != "email") {
+        let inputId = item.id + "ErrorMsg";
+        getElement(inputId).innerText = ("Veuillez remplir ce champ. Merci !");
+    } else if (item.id == 'order') {
+        //rien à faire
+    } else if (item.id == "email") {
+        if (item.value.indexOf('@') === -1) {
+            let inputId = item.id + "ErrorMsg";
+            getElement(inputId).innerText = ("Veuillez renseigner un mail valide");
+        } else {
+            let inputId = item.id + "ErrorMsg";
+            getElement(inputId).innerText = ("");
+        }
+    } else {
+        let inputId = item.id + "ErrorMsg";
+        getElement(inputId).innerText = ("");
+
+        infosClient = {
+            firstName:getElement('firstName').value,
+            lastName:getElement('lastName').value,
+            address:getElement('address').value,
+            city:getElement('city').value,
+            email:getElement('email').value
+        }
+    }
+    })
+
+console.log(infosClient);
+
+})
+
+
+console.table(showCart);
 
 function newElement(element) {
     return document.createElement(element);
