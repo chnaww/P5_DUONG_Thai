@@ -5,6 +5,11 @@ let showCart = [];
 let totalQty = 0;
 let totalPrice = 0;
 
+let regexName = /(^|\s)[a-zA-Z',.-\s]{1,25}(?=\s|$)((?!\W)[a-zA-Z',.-\s]{1,25}(?=\s|$))?/;
+let regexAddress = /^\d+\s[A-z]+\s[A-z]+/;
+let regexMail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+
+
 //fonction pour faciliter l'écriture
 function newElement(element) {
     return document.createElement(element);
@@ -118,15 +123,35 @@ if (localStorage.getItem('localCart')) {
         totalPrice = parseInt(produit.qtyProduit)*parseInt(produit.prixProduit) + parseInt(totalPrice);
         let displaytotalPrice = getElement('totalPrice');
         displaytotalPrice.innerText = totalPrice;
-    }
-} else {
-    let messagePanier = document.querySelector("#cartAndFormContainer h1");
-    messagePanier.innerText =("VOTRE PANIER EST VIDE");
-}
 
-let regexName = /(^|\s)[a-zA-Z',.-\s]{1,25}(?=\s|$)((?!\W)[a-zA-Z',.-\s]{1,25}(?=\s|$))?/;
-let regexAddress = /^\d+\s[A-z]+\s[A-z]+/;
-let regexMail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+
+    }
+
+    let inputFirstName = getElement('firstName');
+    checkInputUser(inputFirstName,regexName);
+
+    let inputLastName = getElement('lastName');
+    checkInputUser(lastName,regexName);
+
+    let inputCity = getElement('city');
+    checkInputUser(city,regexName);
+
+    let inputAddress = getElement('address');
+    checkInputUser(address,regexAddress);
+
+    let inputEmail = getElement('email');
+    checkInputUser(email,regexMail);
+
+    let btnCommander = getElement('order');
+    btnCommander.addEventListener('click',createContactDetails);
+
+
+} else {
+    let idURL = new URL(document.location).searchParams;
+    let idProduct = idURL.get("orderId");
+    let messagePanier = getElement('orderId');
+    messagePanier.innerText =idProduct;
+}
 
 function checkInputUser (inputField,regex) {
     inputField.addEventListener('input', function(userInput) {
@@ -140,20 +165,6 @@ function checkInputUser (inputField,regex) {
     })
 }
 
-let inputFirstName = getElement('firstName');
-checkInputUser(inputFirstName,regexName);
-
-let inputLastName = getElement('lastName');
-checkInputUser(lastName,regexName);
-
-let inputCity = getElement('city');
-checkInputUser(city,regexName);
-
-let inputAddress = getElement('address');
-checkInputUser(address,regexAddress);
-
-let inputEmail = getElement('email');
-checkInputUser(email,regexMail);
 
 function createContactDetails (e) {
     e.preventDefault();
@@ -196,15 +207,12 @@ function createContactDetails (e) {
         }
     })
     .then(function(data) {
-        let idOrder = data.orderId;
-        window.location.href = './confirmation.hmtl?id=' + idOrder;
+        let idOrder=data.orderId;
+        document.location.href = `./confirmation.html?orderId=${idOrder}`;
+        localStorage.clear();
         console.log(idOrder);
-        console.log(data);
     })
     .catch(function(err) {
         alert('fetch error');
     });
 }
-
-let btnCommander = getElement('order');
-btnCommander.addEventListener('click',createContactDetails);
