@@ -5,10 +5,6 @@ let showCart = [];
 let totalQty = 0;
 let totalPrice = 0;
 
-//tableau récap des infos du client
-let infosClient = {firstName,lastName,address,city,email}
-
-
 //fonction pour faciliter l'écriture
 function newElement(element) {
     return document.createElement(element);
@@ -107,12 +103,12 @@ if (localStorage.getItem('localCart')) {
             window.location.reload();
         })
 
-        //afficher la quantité total de canapé
+        //afficher la quantité totale de canapé
         totalQty = parseInt(produit.qtyProduit) + parseInt(totalQty);
         let displayTotalQty = getElement('totalQuantity');
         if (totalQty > 1) {
 
-            //mettre article au pluriel si plusieurs canapé
+            //mettre article au pluriel si plusieurs canapés
             let articlePluriel = getElement('articles');
             articlePluriel.innerHTML = ("articles");
         }
@@ -128,47 +124,87 @@ if (localStorage.getItem('localCart')) {
     messagePanier.innerText =("VOTRE PANIER EST VIDE");
 }
 
-function checkFormEntry (inputToCheck,regexName,regexAddress,regexMail) {
-    inputToCheck.forEach(function(item) {
-        item.addEventlistener('input', function() {
-            if (['firstName','lastName','city'].includes(item.id)) {
-                if (item.value.match(regexName)) {
-                    let inputId = item.id + "ErrorMsg";
-                    getElement(inputId).innerText = ("");
-                    return true;
-                } else {
-                    let inputId = item.id + "ErrorMsg";
-                    getElement(inputId).innerText = ("Veuillez rentrer un/e " + item.id + " valide");
-                    return false;
-                }
-            } else if (item.id == 'address') {
-                if (item.value.match(regexAddress)) {
-                    let inputId = item.id + "ErrorMsg";
-                    getElement(inputId).innerText = ("");
-                    return true;
-                } else {
-                    let inputId = item.id + "ErrorMsg";
-                    getElement(inputId).innerText = ("Veuillez rentrer une " + item.id + " valide");
-                    return false;
-                }
-            } else if (item.id == 'email') {
-                if (item.value.match(regexMail)) {
-                    let inputId = item.id + "ErrorMsg";
-                    getElement(inputId).innerText = ("");
-                    return true;
-                } else {
-                    let inputId = item.id + "ErrorMsg";
-                    getElement(inputId).innerText = ("Veuillez rentrer un " + item.id + " valide");
-                    return false;
-                }
-            }
-        })
-    })
-}
-
 let regexName = /(^|\s)[a-zA-Z',.-\s]{1,25}(?=\s|$)((?!\W)[a-zA-Z',.-\s]{1,25}(?=\s|$))?/;
 let regexAddress = /^\d+\s[A-z]+\s[A-z]+/;
 let regexMail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-let getAllInput = document.querySelectorAll('.cart__order input:not(#order)');
 
-checkFormEntry(getAllInput,regexName,regexAddress,regexMail);
+function checkInputUser (inputField,regex) {
+    inputField.addEventListener('input', function(userInput) {
+        if (!userInput.target.value.match(regex) || userInput.target.value == '') {
+            let inputError = getElement(inputField.id+ "ErrorMsg");
+            inputError.innerText = ('Veuillez renseigner correctement ce champ');
+        }else{
+            let inputError = getElement(inputField.id+ "ErrorMsg");
+            inputError.innerText = ('');
+        }
+    })
+}
+
+let inputFirstName = getElement('firstName');
+checkInputUser(inputFirstName,regexName);
+
+let inputLastName = getElement('lastName');
+checkInputUser(lastName,regexName);
+
+let inputCity = getElement('city');
+checkInputUser(city,regexName);
+
+let inputAddress = getElement('address');
+checkInputUser(address,regexAddress);
+
+let inputEmail = getElement('email');
+checkInputUser(email,regexMail);
+
+function createContactDetails (e) {
+    e.preventDefault();
+    let inputFirstName = getElement('firstName');
+    let inputLastName = getElement('lastName');
+    let inputCity = getElement('city');
+    let inputAddress = getElement('address');
+    let inputEmail = getElement('email');
+
+    let productID = [];
+
+    showCart.forEach(function(item){
+        productID.push(item.idProduit);
+    })
+
+
+    let contact = {
+        firstName : inputFirstName.value,
+        lastName : inputLastName.value,
+        address : inputAddress.value,
+        city : inputCity.value,
+        email : inputEmail.value
+    }
+
+    let products = productID;
+    const order = {contact,products};
+    console.log(order);
+
+    fetch("http://localhost:3000/api/products/order",{
+        method: "POST",
+        headers: {
+          'Accept': 'application/json', 
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(order)
+    })
+    .then(function(res) {
+        if (res.ok) {
+            return res.json();
+        }
+    })
+    .then(function(data) {
+        let idOrder = data.orderId;
+        window.location.href = './confirmation.hmtl?id=' + idOrder;
+        console.log(idOrder);
+        console.log(data);
+    })
+    .catch(function(err) {
+        alert('fetch error');
+    });
+}
+
+let btnCommander = getElement('order');
+btnCommander.addEventListener('click',createContactDetails);
