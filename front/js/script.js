@@ -1,3 +1,13 @@
+//création de fonctions pour faciliter l'écriture du code
+function newElement(element) {
+    return document.createElement(element);
+}
+
+function getElement(element) {
+     return document.getElementById(element);
+}
+
+//requête get pour récupérer les informations de l'API
 fetch("http://localhost:3000/api/products")
     .then(function(res) {
         if (res.ok) {
@@ -5,7 +15,6 @@ fetch("http://localhost:3000/api/products")
         }
     })
     .then(function(value) {  
-        console.table(value);
         for (let item of value) {
             //création du lien pour chaque canapé
             let newA = newElement('a');
@@ -34,18 +43,10 @@ fetch("http://localhost:3000/api/products")
             newArticle.appendChild(newP);
             newP.setAttribute("class", "productDescription");
             newP.innerHTML = item.description //display canapé's description
-
         }
     }) 
     .catch(function(err) {
         //message d'erreur si la récupération d'API a échoué
-        console.log("error fetch API");
+        alert("error fetch API");
     });
 
-function newElement(element) {
-    return document.createElement(element);
-}
-
-function getElement(element) {
-     return document.getElementById(element);
-}

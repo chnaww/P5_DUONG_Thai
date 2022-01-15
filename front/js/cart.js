@@ -5,8 +5,9 @@ let showCart = [];
 let totalQty = 0;
 let totalPrice = 0;
 
+//variables pour vérifier les champs de formulaire
 let regexName = /(^|\s)[a-zA-Z',.-\s]{1,25}(?=\s|$)((?!\W)[a-zA-Z',.-\s]{1,25}(?=\s|$))?/;
-let regexAddress = /^\d+\s[A-z]+\s[A-z]+/;
+let regexAddress = /[A-Za-z0-9'\.\-\s\,]/;
 let regexMail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 
 
@@ -127,34 +128,42 @@ if (localStorage.getItem('localCart')) {
 
     }
 
+    //vérification par regex des entrées utilisateurs
     let inputFirstName = getElement('firstName');
     checkInputUser(inputFirstName,regexName);
 
     let inputLastName = getElement('lastName');
-    checkInputUser(lastName,regexName);
+    checkInputUser(inputLastName,regexName);
 
     let inputCity = getElement('city');
-    checkInputUser(city,regexName);
+    checkInputUser(inputCity,regexName);
 
     let inputAddress = getElement('address');
-    checkInputUser(address,regexAddress);
+    checkInputUser(inputAddress,regexAddress);
 
     let inputEmail = getElement('email');
-    checkInputUser(email,regexMail);
+    checkInputUser(inputEmail,regexMail);
 
+    //déclenchement de la récup de la commande et la requete POST pour récup l'IDorder
     let btnCommander = getElement('order');
     btnCommander.addEventListener('click',createContactDetails);
 
-
+//instruction else pour la page confirmation
 } else {
+    //récupération de l'ID order préalablement renseigné dans l'url
     let idURL = new URL(document.location).searchParams;
     let idProduct = idURL.get("orderId");
+    //affichage du numéro de commande
     let messagePanier = getElement('orderId');
     messagePanier.innerText =idProduct;
 }
 
+
+//définition de la fonction de vérification regex
 function checkInputUser (inputField,regex) {
+    //la vérif commence dès lors que l'utilisateur modifie un champ
     inputField.addEventListener('input', function(userInput) {
+        //renvoi un message d'erreur si les infos ne respectent pas le regex et ou si champ vide
         if (!userInput.target.value.match(regex) || userInput.target.value == '') {
             let inputError = getElement(inputField.id+ "ErrorMsg");
             inputError.innerText = ('Veuillez renseigner correctement ce champ');
@@ -165,21 +174,22 @@ function checkInputUser (inputField,regex) {
     })
 }
 
-
+//définition de la fonction pour récup données commande et envoi de requete POST
 function createContactDetails (e) {
     e.preventDefault();
+
+    //récup des données clients
     let inputFirstName = getElement('firstName');
     let inputLastName = getElement('lastName');
     let inputCity = getElement('city');
     let inputAddress = getElement('address');
     let inputEmail = getElement('email');
 
+    //récup des données du panier
     let productID = [];
-
     showCart.forEach(function(item){
         productID.push(item.idProduit);
     })
-
 
     let contact = {
         firstName : inputFirstName.value,
@@ -188,11 +198,11 @@ function createContactDetails (e) {
         city : inputCity.value,
         email : inputEmail.value
     }
-
+    //création du formulaire pour l'envoi POST
     let products = productID;
     const order = {contact,products};
-    console.log(order);
 
+    //fetch pour l'envoi des données
     fetch("http://localhost:3000/api/products/order",{
         method: "POST",
         headers: {
@@ -207,10 +217,13 @@ function createContactDetails (e) {
         }
     })
     .then(function(data) {
+        //récupération du numéro de commande
+        //insertion de celui ci dans les params de l'URL
+        //renvoi vers la page confirmation avec le numéro de commande
+        //suppression du localstorage pour afficher les bonnes informations sur la page confirmation
         let idOrder=data.orderId;
         document.location.href = `./confirmation.html?orderId=${idOrder}`;
         localStorage.clear();
-        console.log(idOrder);
     })
     .catch(function(err) {
         alert('fetch error');

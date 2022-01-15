@@ -1,10 +1,19 @@
-//récupération de l'ID lié au canapé sélectionné
+//création de fonctions pour faciliter l'écriture du code
+function newElement(element) {
+    return document.createElement(element);
+}
+
+function getElement(element) {
+     return document.getElementById(element);
+}
+
+//récupération de l'ID qui se trouve dans les params de l'URL lié au canapé sélectionné
 let idURL = new URL(document.location).searchParams;
 let idProduct = idURL.get("id");
 
 //définition variables client
-let productColorPick = document.getElementById('colors');
-let productQtyPick = document.getElementById('quantity');
+let productColorPick = getElement('colors');
+let productQtyPick = getElement('quantity');
 
 //localStorage.clear();
 
@@ -18,19 +27,19 @@ fetch('http://localhost:3000/api/products/' + idProduct)
     .then (function(value) {
         console.table(value);
         //récupération du nom du canapé
-        let productTitle = document.getElementById('title');
+        let productTitle = getElement('title');
         productTitle.innerHTML = value.name;
 
         //récupération du prix du canapé
-        let productPrice = document.getElementById('price');
+        let productPrice = getElement('price');
         productPrice.innerHTML = value.price;
 
         //récupération du description du canapé
-        let productDescription = document.getElementById('description');
+        let productDescription = getElement('description');
         productDescription.innerHTML = value.description;
 
         //intégration de l'image du canapé
-        let productImg = document.createElement("img");
+        let productImg = newElement("img");
         let selectImg = document.querySelector(".item__img");
 
         selectImg.appendChild(productImg);
@@ -41,8 +50,8 @@ fetch('http://localhost:3000/api/products/' + idProduct)
 
         //boucle pour afficher les différents choix de couleur
         for ( let color of value.colors) {
-            let newOption = document.createElement("option");
-            let selectOption = document.getElementById("colors");
+            let newOption = newElement("option");
+            let selectOption = getElement("colors");
 
             selectOption.appendChild(newOption);
             newOption.value = color;
@@ -50,8 +59,8 @@ fetch('http://localhost:3000/api/products/' + idProduct)
         }
         //ajout au panier
         //ajout d'un event au click sur le bouton ajout panier
-        let addToCart = document.getElementById('addToCart')
-        addToCart.addEventListener('click', function(event) {
+        let addToCart = getElement('addToCart')
+        addToCart.addEventListener('click', function() {
 
             //verifier que les champs couleur et quantité soient bien renseignés
             if (productQtyPick.value > 0 && productQtyPick.value <= 100 && productColorPick.value != '') {  
@@ -108,5 +117,5 @@ fetch('http://localhost:3000/api/products/' + idProduct)
         })
     })
     .catch(function(err) {
-        console.log("erreur de récupération API");
+        alert("erreur de récupération API");
     });
