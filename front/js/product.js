@@ -10,6 +10,7 @@ function getElement(element) {
 //récupération de l'ID qui se trouve dans les params de l'URL lié au canapé sélectionné
 let idURL = new URL(document.location).searchParams;
 let idProduct = idURL.get("id");
+console.log(idProduct);
 
 //définition variables client
 let productColorPick = getElement('colors');
@@ -25,7 +26,6 @@ fetch('http://localhost:3000/api/products/' + idProduct)
         }
     })
     .then (function(value) {
-        console.table(value);
         //récupération du nom du canapé
         let productTitle = getElement('title');
         productTitle.innerHTML = value.name;
@@ -74,7 +74,6 @@ fetch('http://localhost:3000/api/products/' + idProduct)
                     nomProduit : value.name,
                     imgProduit : value.imageUrl,
                     imgAltProduit : value.altTxt,
-                    prixProduit : value.price,
                     couleurProduit : choixCouleur,
                     qtyProduit : choixQty
                 }
@@ -96,20 +95,17 @@ fetch('http://localhost:3000/api/products/' + idProduct)
                         let newQty = parseInt(sameProduct.qtyProduit) + parseInt(choixQty);
                         sameProduct.qtyProduit = newQty;
                         localStorage.setItem('localCart', JSON.stringify(cart));
-                        console.table(cart);
 
                     // sinon ajouter le nouveau produit dans le panier
                     } else {
                         cart.push(produitChoisi);
                         localStorage.setItem('localCart', JSON.stringify(cart));
-                        console.table(cart);
                     }
                 
                 // si il n'y a rien dans le localstorage, créer le panier
                 } else {
                     cart.push(produitChoisi);
                     localStorage.setItem('localCart', JSON.stringify(cart));
-                    console.table(cart);
                 }
             } else {
                 alert ("error");
