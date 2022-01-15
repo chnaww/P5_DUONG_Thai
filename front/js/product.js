@@ -10,7 +10,6 @@ function getElement(element) {
 //récupération de l'ID qui se trouve dans les params de l'URL lié au canapé sélectionné
 let idURL = new URL(document.location).searchParams;
 let idProduct = idURL.get("id");
-console.log(idProduct);
 
 //définition variables client
 let productColorPick = getElement('colors');

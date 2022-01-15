@@ -9,15 +9,15 @@ let totalPrice = 0;
 let idKanap;
 
 //variables pour vérifier les champs de formulaire
-let regexName = /(^|\s)[a-zA-Z',.-\s]{1,25}(?=\s|$)((?!\W)[a-zA-Z',.-\s]{1,25}(?=\s|$))?/;
+let regexName = /^[a-z ,.'-]+$/i;
 let regexAddress = /[A-Za-z0-9'\.\-\s\,]/;
 let regexMail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-
 
 //fonction pour faciliter l'écriture
 function newElement(element) {
     return document.createElement(element);
 }
+
 function getElement(element) {
      return document.getElementById(element);
 }
@@ -173,6 +173,7 @@ if (localStorage.getItem('localCart')) {
     let messagePanier = getElement('orderId');
     messagePanier.innerText =idProduct;
 }
+
 
 
 //définition de la fonction de vérification regex
