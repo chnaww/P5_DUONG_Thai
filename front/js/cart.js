@@ -4,6 +4,8 @@ let showCart = [];
 //variables pour le prix final et la quantité totale
 let totalQty = 0;
 let totalPrice = 0;
+
+//variable pour récupérer le prix via l'id du kanap dans l'api
 let idKanap;
 
 //variables pour vérifier les champs de formulaire
@@ -26,8 +28,10 @@ if (localStorage.getItem('localCart')) {
 
     // boucle pour afficher l'ensemble des produits
     for (let produit of showCart) {
+        //recup de l'id du canapé ciblé
         idKanap = produit.idProduit;
 
+        //méthode fetch pour récupérer le prix du canapé à afficher dans le panier
         fetch('http://localhost:3000/api/products/' + idKanap)
             .then(function(result) {
                 if (result.ok) {
