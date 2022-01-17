@@ -208,7 +208,8 @@ function createContactDetails (e) {
         productID.push(item.idProduit);
     })
 
-    let contact = {
+    //création d'un objet contact
+    const contact = {
         firstName : inputFirstName.value,
         lastName : inputLastName.value,
         address : inputAddress.value,
@@ -216,7 +217,8 @@ function createContactDetails (e) {
         email : inputEmail.value
     }
     //création du formulaire pour l'envoi POST
-    let products = productID;
+    const products = productID;
+    //création de l'objet contact
     const order = {contact,products};
 
     //fetch pour l'envoi des données
