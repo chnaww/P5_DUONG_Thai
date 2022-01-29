@@ -139,7 +139,7 @@ if (localStorage.getItem('localCart')) {
                 displaytotalPrice.innerText = totalPrice;
             })
             .catch(function(err){
-                console.log(err);
+                console.log("erreur de récupération");
             });
     }
         

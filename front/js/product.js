@@ -15,8 +15,6 @@ let idProduct = idURL.get("id");
 let productColorPick = getElement('colors');
 let productQtyPick = getElement('quantity');
 
-//localStorage.clear();
-
 //requet GET avec l'ID du canapé
 fetch('http://localhost:3000/api/products/' + idProduct)
     .then(function(result) {
@@ -107,7 +105,7 @@ fetch('http://localhost:3000/api/products/' + idProduct)
                     localStorage.setItem('localCart', JSON.stringify(cart));
                 }
             } else {
-                alert ("error");
+                alert ("Veuillez choisir une couleur et/ou indiquer une quantité entre 0 et 100");
             }
         })
     })
