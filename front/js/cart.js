@@ -170,8 +170,13 @@ if (localStorage.getItem('localCart')) {
     let idURL = new URL(document.location).searchParams;
     let idProduct = idURL.get("orderId");
     //affichage du numéro de commande
-    let messagePanier = getElement('orderId');
-    messagePanier.innerText =idProduct;
+    if (idProduct) {
+        let messagePanier = getElement('orderId');
+        messagePanier.innerText =idProduct;
+    } else {
+        console.log("panier vide");
+        document.querySelector('#cartAndFormContainer h1').innerText = 'Votre panier est vide';
+    }
 }
 
 
