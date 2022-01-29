@@ -174,7 +174,6 @@ if (localStorage.getItem('localCart')) {
         let messagePanier = getElement('orderId');
         messagePanier.innerText =idProduct;
     } else {
-        console.log("panier vide");
         document.querySelector('#cartAndFormContainer h1').innerText = 'Votre panier est vide';
     }
 }
